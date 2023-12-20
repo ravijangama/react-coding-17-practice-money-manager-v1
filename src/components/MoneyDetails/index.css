@@ -1,0 +1,30 @@
+/* Write your CSS here */
+.money-details-container {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  width: 50%;
+  margin-right: 16px;
+}
+.bg-balance {
+  background-color: transparent;
+  border: 1px solid #84cc16;
+  border-radius: 10px;
+}
+.bg-income {
+  background-color: transparent;
+  border: 1px solid #06b6d4;
+  border-radius: 10px;
+}
+.bg-expense {
+  background-color: transparent;
+  border: 1px solid #7c3aed;
+  border-radius: 10px;
+}
+.type-img {
+  width: 52px;
+  height: 52px;
+  margin-right: 20px;
+}
+.type-container {
+}

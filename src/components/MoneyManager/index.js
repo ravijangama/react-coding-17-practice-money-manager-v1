@@ -1,4 +1,5 @@
 import {Component} from 'react'
+import {v4 as uuidv4} from 'uuid'
 import './index.css'
 import MoneyDetails from '../MoneyDetails'
 import TransactionItem from '../TransactionItem'
@@ -13,79 +14,98 @@ const transactionTypeOptions = [
     displayText: 'Expenses',
   },
 ]
-
-const BALANCE_URL =
-  'https://assets.ccbp.in/frontend/react-js/money-manager/balance-image.png '
-
-const INCOME_URL =
-  'https://assets.ccbp.in/frontend/react-js/money-manager/income-image.png'
-
-const EXPENSE_URL =
-  'https://assets.ccbp.in/frontend/react-js/money-manager/expenses-image.png '
-
 // Write your code here
 class MoneyManager extends Component {
   state = {
     transactionList: [],
     titleInput: '',
     amountInput: '',
+    optionType: '',
+  }
+
+  changeTitleInput = event => {
+    this.setState({titleInput: event.target.value})
+  }
+
+  changeAmountInput = event => {
+    this.setState({amountInput: event.target.value})
+  }
+
+  changeOptionType = event => {
+    this.setState({optionType: event.target.value})
+  }
+
+  submitOnAdd = event => {
+    event.preventDefault()
+    const {titleInput, amountInput, optionType} = this.state
+    const newTransaction = {
+      id: uuidv4(),
+      titleInput,
+      amountInput,
+      optionType,
+    }
+    this.setState(prevState => ({
+      transactionList: [...prevState.transactionList, newTransaction],
+      titleInput: '',
+      amountInput: '',
+      optionType: '',
+    }))
   }
 
   render() {
     const {transactionList, titleInput, amountInput} = this.state
-    console.log(transactionTypeOptions)
     const jsxElement = (
       <div className="app-container">
         <div className="app-sub-container">
           <div className="heading-container">
             <h1 className="richard-heading">Hi, Richard</h1>
             <p className="welcome-desc">
-              Welcome to your <span className="money-span">Money Manager</span>
+              Welcome back to your
+              <span className="money-span">Money Manager</span>
             </p>
           </div>
-          <ul className="money-detail-ul">
-            <MoneyDetails
-              imgUrl={BALANCE_URL}
-              amountType="Balance"
-              altText="balance"
-              bgName="bg-balance"
-            />
-            <MoneyDetails
-              imgUrl={INCOME_URL}
-              amountType="Income"
-              altText="income"
-              bgName="bg-income"
-            />
-            <MoneyDetails
-              imgUrl={EXPENSE_URL}
-              amountType="Expenses"
-              altText="expenses"
-              bgName="bg-expense"
-            />
-          </ul>
+          <MoneyDetails transactionDetails={transactionList} />
           <div className="form-transaction-container">
-            <form className="form-container">
+            <form className="form-container" onSubmit={this.submitOnAdd}>
               <h1>Add Transaction</h1>
               <label htmlFor="titleId">TITLE</label>
-              <input id="titleId" value={titleInput} placeholder="TITLE" />
+              <input
+                id="titleId"
+                value={titleInput}
+                placeholder="TITLE"
+                onChange={this.changeTitleInput}
+              />
               <label htmlFor="amountId">AMOUNT</label>
-              <input id="amountId" value={amountInput} placeholder="AMOUNT" />
+              <input
+                id="amountId"
+                value={amountInput}
+                placeholder="AMOUNT"
+                onChange={this.changeAmountInput}
+              />
               <label htmlFor="typeId">TYPE</label>
-              <select id="typeId">
-                <option>Income</option>
-                <option>Expense</option>
+              <select id="typeId" onChange={this.changeOptionType}>
+                {transactionTypeOptions.map(eachType => (
+                  <option key={eachType.optionId} value={eachType.optionId}>
+                    {eachType.displayText}
+                  </option>
+                ))}
               </select>
-              <button type="button">Add</button>
+              <button type="submit">Add</button>
             </form>
             <div className="history-list-container">
               <h1>History</h1>
-              <div className="transaction-container">
-                <p>Title</p>
-                <p>Amount</p>
-                <p>Type</p>
-              </div>
-              <ul>
-                <TransactionItem />
+              <ul className="history-ul-container">
+                <li className="transaction-container">
+                  <p className="title-p">Title</p>
+                  <p className="title-p">Amount</p>
+                  <p className="title-p">Type</p>
+                </li>
+                {transactionList.map(eachTransaction => (
+                  <TransactionItem
+                    key={eachTransaction.id}
+                    transactionDetails={eachTransaction}
+                  />
+                ))}
               </ul>
             </div>
           </div>

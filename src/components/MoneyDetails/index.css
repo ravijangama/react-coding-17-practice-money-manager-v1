@@ -1,10 +1,16 @@
 /* Write your CSS here */
+.money-detail-ul {
+  padding-left: 0;
+  width: 100%;
+}
+
 .money-details-container {
   list-style-type: none;
+  margin-right: 16px;
   display: flex;
   align-items: center;
-  width: 50%;
-  margin-right: 16px;
+  justify-content: center;
+  margin-bottom: 12px;
 }
 .bg-balance {
   background-color: transparent;
@@ -24,7 +30,5 @@
 .type-img {
   width: 52px;
   height: 52px;
-  margin-right: 20px;
-}
-.type-container {
+  margin-right: 24px;
 }

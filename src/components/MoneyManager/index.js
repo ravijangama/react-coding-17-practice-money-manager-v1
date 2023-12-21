@@ -53,7 +53,7 @@ class MoneyManager extends Component {
   }
 
   render() {
-    const {transactionList, titleInput, amountInput} = this.state
+    const {transactionList, titleInput, amountInput,optionType} = this.state
     const jsxElement = (
       <div className="app-container">
         <div className="app-sub-container">
@@ -83,7 +83,7 @@ class MoneyManager extends Component {
                 onChange={this.changeAmountInput}
               />
               <label htmlFor="typeId">TYPE</label>
-              <select id="typeId" onChange={this.changeOptionType}>
+              <select id="typeId" onChange={this.changeOptionType} value={optionType}>
                 {transactionTypeOptions.map(eachType => (
                   <option key={eachType.optionId} value={eachType.optionId}>
                     {eachType.displayText}

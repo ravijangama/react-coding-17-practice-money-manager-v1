@@ -20,7 +20,10 @@ class MoneyManager extends Component {
     transactionList: [],
     titleInput: '',
     amountInput: '',
-    optionType: '',
+    optionType: 'INCOME',
+    balanceAmount: 0,
+    incomeAmount: 0,
+    expensesAmount: 0,
   }
 
   changeTitleInput = event => {
@@ -38,6 +41,17 @@ class MoneyManager extends Component {
   submitOnAdd = event => {
     event.preventDefault()
     const {titleInput, amountInput, optionType} = this.state
+    const {balanceAmount, incomeAmount, expensesAmount} = this.state
+    let totalBalance = balanceAmount
+    let totalExpenses = expensesAmount
+    let totalIncome = incomeAmount
+    if (optionType === 'INCOME') {
+      totalIncome += parseInt(amountInput)
+      totalBalance = totalIncome - totalExpenses
+    } else if (optionType === 'EXPENSES') {
+      totalExpenses += parseInt(amountInput)
+      totalBalance = totalIncome - totalExpenses
+    }
     const newTransaction = {
       id: uuidv4(),
       titleInput,
@@ -48,12 +62,23 @@ class MoneyManager extends Component {
       transactionList: [...prevState.transactionList, newTransaction],
       titleInput: '',
       amountInput: '',
-      optionType: '',
+      optionType: 'Income',
+      balanceAmount: totalBalance,
+      expensesAmount: totalExpenses,
+      incomeAmount: totalIncome,
+    }))
+  }
+
+  deleteTransaction = id => {
+    this.setState(prevState => ({
+      transactionList: prevState.transactionList.filter(
+        eachTrans => eachTrans.id !== id,
+      ),
     }))
   }
 
   render() {
-    const {transactionList, titleInput, amountInput,optionType} = this.state
+    const {transactionList, titleInput, amountInput, optionType} = this.state
     const jsxElement = (
       <div className="app-container">
         <div className="app-sub-container">
@@ -64,7 +89,7 @@ class MoneyManager extends Component {
               <span className="money-span">Money Manager</span>
             </p>
           </div>
-          <MoneyDetails transactionDetails={transactionList} />
+          <MoneyDetails stateObj={this.state} />
           <div className="form-transaction-container">
             <form className="form-container" onSubmit={this.submitOnAdd}>
               <h1>Add Transaction</h1>
@@ -83,7 +108,11 @@ class MoneyManager extends Component {
                 onChange={this.changeAmountInput}
               />
               <label htmlFor="typeId">TYPE</label>
-              <select id="typeId" onChange={this.changeOptionType} value={optionType}>
+              <select
+                id="typeId"
+                onChange={this.changeOptionType}
+                value={optionType}
+              >
                 {transactionTypeOptions.map(eachType => (
                   <option key={eachType.optionId} value={eachType.optionId}>
                     {eachType.displayText}
@@ -94,16 +123,18 @@ class MoneyManager extends Component {
             </form>
             <div className="history-list-container">
               <h1>History</h1>
+
+              <div className="transaction-container">
+                <p className="title-p">Title</p>
+                <p className="title-p">Amount</p>
+                <p className="title-p">Type</p>
+              </div>
               <ul className="history-ul-container">
-                <li className="transaction-container">
-                  <p className="title-p">Title</p>
-                  <p className="title-p">Amount</p>
-                  <p className="title-p">Type</p>
-                </li>
                 {transactionList.map(eachTransaction => (
                   <TransactionItem
                     key={eachTransaction.id}
                     transactionDetails={eachTransaction}
+                    deleteTransaction={this.deleteTransaction}
                   />
                 ))}
               </ul>
